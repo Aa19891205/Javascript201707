@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+         margin: 0;
+            padding: 0;
+        }
+        #tables{
+            margin: 20px auto;
+            padding: 10px;
+            border-radius:10px;
+        }
+        #tables thead{
+            background: lightblue;
+        }
+        #tables tr th, #tables tr td{
+            width: 100px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+        }
+        .bg0{
+            background: hotpink;
+        }
+        .bg1{
+            background: cornflowerblue;
+        }
+        #tables tbody tr:hover{
+            cursor: pointer;
+            background: magenta;
+            font-size: 20px;
+            color: aquamarine;
+
+        }
+        #tables tr th{
+            cursor: pointer;
+            -webkit-user-select: none;
+        }
+    </style>
+</head>
+<body>
+<table id="tables" border="1" cellspacing="0">
+    <thead>
+    <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+</body>
+</html>
+<script>
+   var tables=document.getElementById('tables') ;
+   var tHead=tables.tHead;
+   var tHeadRows=tHead.rows[0];
+   var tHeadThs=tHeadRows.cells;
+   var tBody=tables.tBodies[0];
+   var tBodyRows=tBody.rows;
+//   首先在开头把后面要用到的两种方法写出来，一个是将类数组转化成数组，一个是解决json在IE8浏览器一下不兼容的问题。
+   var until=(function () {
+//      function box(box) {
+//          try{
+//             return [].slice.call(box,0)
+//          }catch(e){
+//              var ary=[];
+//              for(var i=0;i<box.length;i++){
+//                  ary.push(box[i])
+//              }
+//              return ary
+//          }
+//
+//          }
+
+
+
+       function box(likeArray) {
+           try {
+               return [].slice.call(likeArray, 0)
+           } catch (e) {
+               var arr = [];
+               for (var i = 0; i < likeArray.length; i++) {
+                   arr.push(likeArray[i]);
+               }
+               return arr;
+           }
+       }
+       function box1(box1) {
+           return "JSON" in window ? JSON.parse(box1):eval('('+box1+')')
+       }
+       return{
+           box:box,
+           box1:box1
+      }
+   })();
+//  1 先进行ajax方法，将要寻找的信息发出请求，后台接收到请求后，对数据库抓取得到需要的信息，然后返回一个json数据包。
+    function sum() {
+        var xhr=new XMLHttpRequest();
+        xhr.open('get','./table.json');
+        xhr.onreadystatechange=function () {
+            if(this.readyState===4 && this.status===200){
+                console.log(this.responseText)
+                var data=until.box1(this.responseText);
+                console.log(data);
+                box2(data)
+            }
+        };
+        xhr.send()
+    }
+    sum();
+//    2将得到的对象数据绑定到文档碎片上，然后再追加到dom中。
+    function box2(data) {
+       var  str='';
+        for(var n=0;n<data.length;n++){
+            var cur=data[n];
+            str+='<tr pin='+cur.pin+'>';
+            str+='<td>'+cur.name+'</td>';
+            str+='<td>'+cur.pop+'</td>';
+            str+='<td>'+cur.hot+'</td>';
+            str+='</tr>';
+        }
+         tBody.innerHTML=str;
+        change();
+        blindEvent();
+    }
+//3 先把html结构中的元素集合得到，然后将类数组转化成数组，然后再给三个按钮上绑定点击事件，然后点击事件发生时tbody里面的tr按照索引对应的值通过数组的sort方法进行大小比较后进行排序，排序完成后，再循环追加到文档碎片中，然后再一次性的添加到dom文档中，一次回流，节省性能。
+   function blindEvent () {
+       var bodyRows = until.box(tBodyRows);
+       for (var n = 0; n < tHeadThs.length; n++) {
+           var btn = tHeadThs[n];
+           btn.m = n;
+           btn.flag = 1;
+           btn.onclick = function () {
+               var that = this;
+               for (var k = 0; k < tHeadThs.length; k++) {
+                   if (that !== tHeadThs[k]) {
+                       tHeadThs[k].flag = 1;
+                   }
+               }
+               bodyRows.sort(function (a, b) {
+                   var p1 = a.cells[that.m].innerHTML;
+                   var p2 = b.cells[that.m].innerHTML;
+                   if (that.m){
+                       return (p1-p2) * that.flag
+                   }
+                   var p3=a.getAttribute('pin').localeCompare(b.getAttribute('pin'));
+                   return p3 *that.flag;
+               });
+            that.flag *=-1;
+            var fry=document.createDocumentFragment();
+            for(var l=0;l<bodyRows.length;l++){
+                fry.appendChild(bodyRows[l])
+            }
+            tBody.appendChild(fry);
+               change()
+           }
+
+       }
+   }
+//4隔行变色
+function change() {
+    for(var j=0;j<tBodyRows.length;j++){
+        tBodyRows[j].className='bg'+j % 2
+    }
+}
+</script>

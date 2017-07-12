@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #tables{
+            margin: 30px auto;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        #tables thead{
+            background: #7ffffa;
+            cursor: pointer;
+        }
+        #tables tr th ,#tables tr td{
+            width: 100px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+        }
+        .bg0{
+            background: palevioletred;
+        }
+        .bg1{
+            background: darkcyan;
+        }
+        #tables tbody tr:hover{
+            cursor: pointer;
+            background: fuchsia;
+            color: blue;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+<table id="tables" border="1" cellspacing="0">
+    <thead>
+    <tr>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+</body>
+</html>
+<script>
+
+    var tables=document.getElementById('tables');
+    var tHead=tables.tHead;
+    var tHeadRows=tHead.rows[0];
+     var tHeadThs=tHeadRows.cells;
+     var tBody=tables.tBodies[0];
+    var  tBodyRows=tBody.rows;
+
+    <!--1先用ajax进行申请访问数据，得到数据库通过json返回的date数据-->
+    var untils=(function () {
+        function box(box) {
+            try {
+                return [].slice.call(box,0)
+            } catch (e) {
+                var ary = [];
+                for (var i = 0; i < box.length; i++) {
+                    ary.push(box[i])
+                }
+                return ary;
+            }
+        }
+            function box1(box1) {
+                return "JSON" in window ? JSON.parse(box1):eval('('+box1+')');
+            }
+            return {
+                box:box,
+                box1:box1
+            }
+
+    })();
+    function sum() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('get', './table.json');
+        xhr.onreadystatechange = function () {
+            if (this.readyState === 4 && this.status === 200) {
+                var date = untils.box1(this.responseText);
+                console.log(date);
+                box2(date);
+            }
+        };
+        xhr.send();
+    }
+    sum();
+//    2得到对象数据date后就要进行绑定，用字符串方法，可以实现一次性回流。
+    function box2(date) {
+        var str='';
+        for (var i=0;i<date.length;i++){
+            var cur=date[i];
+           str+='<tr pin='+cur.pin+'>' ;
+           str+='<td>'+cur.name+'</td>';
+           str+='<td>'+cur.pop+'</td>';
+           str+='<td>'+cur.hot+'</td>';
+           str+='</tr>'
+        }
+        tBody.innerHTML=str;
+        change();
+        eventBlind();
+    }
+//    3给表头绑定点击事件，对类数组进行转化变成数组，利用数组sort方法进行升降排序。
+    function eventBlind() {
+        var box3=untils.box(tBodyRows);
+        for(var i=0;i<tHeadThs.length;i++) {
+            var btn = tHeadThs[i];
+            btn.n = i;
+            btn.flag = 1;
+            btn.onclick = function () {
+                var that = this;
+                for(var k=0;k<tHeadThs.length;k++) {
+                    if (that !== tHeadThs[k]) {
+                        tHeadThs[k].flag = 1;
+                    }
+                }
+                box3.sort(function (a, b) {
+                    var p1 = a.cells[that.n].innerHTML;
+                    var p2 = b.cells[that.n].innerHTML;
+                    var p3 = a.getAttribute('pin').localeCompare(b.getAttribute('pin'));
+                    if (that.n) {
+                        return (p1-p2) * that.flag
+                    }
+                    return p3 * that.flag;
+
+                });
+                that.flag *= -1;
+                var fry = document.createDocumentFragment();
+                for (var n = 0; n < box3.length; n++) {
+                    fry.appendChild(box3[n])
+                }
+                tBody.appendChild(fry);
+                change();
+            }
+        }
+    }
+//   隔行变色
+    function change() {
+
+        for (var i = 0; i < tBodyRows.length; i++) {
+            tBodyRows[i].className = 'bg' + i % 2
+        }
+
+
+    }
+</script>

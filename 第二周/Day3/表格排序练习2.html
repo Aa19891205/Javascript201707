@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #tables{
+            margin: 30px auto;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        #tables tr th{
+            cursor: pointer;
+            background: navajowhite;
+            text-align: center;
+        }
+        #tables tr th ,#tables tr td{
+            width: 100px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+        }
+        #tables tbody tr:hover{
+            cursor: pointer;
+            background: #7ffffa;
+            color: sandybrown;
+            font-size: 20px;
+        }
+        .bg0{
+            background: hotpink;
+        }
+        .bg1{
+            background: mediumseagreen;
+        }
+    </style>
+</head>
+<body>
+<table id="tables" border="1" cellspacing="0">
+    <thead>
+    <tr>
+        <th>name</th>
+        <th>pop</th>
+        <th>hot</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    </tbody>
+</table>
+</body>
+</html>
+<script>
+   var tables=document.getElementById('tables') ;
+   var tHead=tables.tHead;
+   var tBody=tables.tBodies[0];
+   var tHeadRows=tHead.rows[0];
+   var tBodyRows=tBody.rows;
+   var tHeadThs=tHeadRows.cells;
+
+   var until=(function () {
+       function box(box) {
+           try{
+               return [].slice.call(box,0)
+           }catch (e){
+               var ary=[];
+               for(var i=0;i<box.length;i++){
+                   ary.push(box[i])
+               }
+               return ary
+           }
+       }
+       function box1(box1) {
+           return "JSON" in window ? JSON.parse(box1):eval('('+box1+')')
+       }
+
+       return {
+           box:box,
+           box1:box1
+       }
+
+   } )();
+
+   function sum() {
+      var xhr=new XMLHttpRequest() ;
+       xhr.open('get','./table.json');
+       xhr.onreadystatechange=function () {
+           if(this.readyState===4 && this.status===200) {
+               var date = until.box1(this.responseText);
+               box2(date);
+           }
+       };
+       xhr.send()
+   }
+   sum();
+   function box2(box2) {
+       var str='';
+       for(var i=0;i<box2.length;i++){
+           var cur=box2[i];
+           str+='<tr pin='+cur.pin+'>';
+           str+='<td>'+cur.name+'</td>';
+           str+='<td>'+cur.pop+'</td>';
+           str+='<td>'+cur.hot+'</td>';
+           str+='</tr>'
+       }
+       tBody.innerHTML=str;
+       change();
+       box3()
+   }
+   function box3() {
+       var box4=until.box(tBodyRows);
+       for(var i=0;i<tHeadThs.length;i++){
+         var btn=tHeadThs[i];
+         btn.n=i;
+         btn.flag=1;
+          btn.onclick=function () {
+             var that=this;
+              for(var n=0;n<tHeadThs.length;n++){
+                  if(that!==tHeadThs[n]){
+                      tHeadThs[n].flag=1;
+                  }
+              }
+              box4.sort(function (a,b) {
+                  var p1=a.cells[that.n].innerHTML;
+                  var p2=b.cells[that.n].innerHTML;
+                  var p3=a.getAttribute('pin').localeCompare(b.getAttribute('pin'));
+                  if(that.n){
+                      return (p1-p2) * that.flag
+                  }
+                  return p3 * that.flag
+              });
+              that.flag *=-1;
+              var fry=document.createDocumentFragment();
+              for(var k=0;k<box4.length;k++){
+                  fry.appendChild(box4[k])
+              }
+              tBody.appendChild(fry);
+              change();
+          }
+
+       }
+
+   }
+
+  function change() {
+      for(var i=0;i<tBodyRows.length;i++){
+          tBodyRows[i].className='bg'+i % 2
+      }
+  }
+
+
+
+
+
+</script>

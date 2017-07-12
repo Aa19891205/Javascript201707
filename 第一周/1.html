@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+//    function f1() {
+//        console.log('f1');
+//    }
+//
+//    function f3() {
+//        console.log(this);
+//        console.log('f2');
+//    }
+    // 最终执行的是谁 最终输出什么
+//        f1.call(f2);
+//        f1.call.call(f2);
+//        f1.call.call.call(f2);
+//        f1.call.call.call.call(f2);
+//        f1.call.call.call.call.call.call(f2);
+    var li=['a','b','c','d'];
+    li.sort(function (a,b) {
+        return a-b;
+
+    });
+obtn1.cn='pin';
+    obtn2.cn='pop';
+obtn1.onclick=obtn2.onclick=sum;
+oul.flay=-1;
+function sum() {
+    var that=this;
+    ary.sort(function (a,b) {
+        var p1=a.getAttribute(that.cn);
+        var p2=b.getAttribute(that.cn);
+        if(isNaN(p1)){
+            return p1.localeCompare(p2)*oul.flay
+        }else{
+            return (p1-p2)*oul.flay
+        }
+    });
+    oul.flay *=-1;
+}
+
+console.log(li)
+</script>

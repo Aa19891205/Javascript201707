@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #tables{
+            margin: 20px auto;
+            border-radius: 10px;
+            padding: 10px;
+
+        }
+        #tables tr th, #tables tr td{
+            width: 100px;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+
+        }
+        #tables thead{
+            background-color: hotpink;
+        }
+    </style>
+</head>
+<body>
+<table id="tables">
+    <thead>
+    <tr>
+        <th>name</th>
+        <th>pop</th>
+        <th>hot</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!--<tr>-->
+        <!--<td>周杰伦</td>-->
+        <!--<td>30405</td>-->
+        <!--<td></td>-->
+    <!--</tr>-->
+    </tbody>
+</table>
+<script>
+    var utils = (function () {
+        function likeToArray(likeArray) {
+            try {
+                return [].slice.call(likeArray, 0)
+            } catch (e) {
+                var arr = [];
+                for (var i = 0; i < likeArray.length; i++) {
+                    arr.push(likeArray[i]);
+                }
+                return arr;
+            }
+        }
+
+        function jsonParse(jsonStr) {
+            return "JSON" in window ? JSON.parse(jsonStr) : eval('(' + jsonStr + ')');
+        }
+
+        return {
+            likeToArray: likeToArray,
+            jsonParse: jsonParse
+        }
+    })();
+
+
+
+    var tables=document.getElementById('tables');
+    var tbody=tables.tBodies[0];
+    function getDate() {
+        var xhr=new XMLHttpRequest();
+        xhr.open('get','./Day2／package.json');
+        xhr.onreadystatechange=function () {
+            if(this.readyState===4&&this.status===200){
+                this.responseText
+                var date=utils.jsonparse(this.responseText);
+                blindDate(date)
+
+            }
+        };
+        xhr.send()
+    }
+    getDate();
+
+
+
+
+
+
+    function blindDate(date) {
+        for(var i=0;i<date.length;i++){
+            var str='';
+            var cur=date[i];
+            str +='<tr pin='+cur.pin+'>';
+            str +='<td>'+cur.name+'</td>';
+            str +='<td>'+cur.pop+'</td>';
+            str +='<td>'+cur.hot+'</td>';
+            str +='</tr>'
+        }
+        tbody.innerHTML=str;
+        blindEvent()
+    }
+
+
+
+    var thead=tables.tHead;
+    var tHeadRows=thead.rows[0];
+    var  tHeadThs=tHeadRows.cells;
+    function blindEvent() {
+
+        for(var i=0;i<date.length;i++){
+            tHeadThs[i].onclick=function () {
+
+            }
+        }
+    }
+
+
+
+    var tBoyRows=
+</script>
+</body>
+</html>
