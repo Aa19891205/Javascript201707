@@ -62,7 +62,7 @@
         // 此时scrollTop
         var sTop = utils.win('scrollTop');
 
-        if(sTop + winH >= imgT + imgH){
+        if(sTop + winH >= imgT+imgH){
             var imgSrc = img.getAttribute('real');
             var temp = new Image;
             temp.src = imgSrc;
@@ -94,7 +94,7 @@
             }
             op += 0.2;
             utils.setCss(img, 'opacity', op);
-        }, 120);
+        }, 200);
     }
 </script>
 </body>

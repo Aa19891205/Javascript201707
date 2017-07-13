@@ -75,7 +75,7 @@ var utils = (function () {
         }
         //去掉样式值的单位 比如10px 8em 19rem 0.3 获取到的样式值 都是字符串 block red
         reg = /^[+-]?(\d|[1-9]\d+)(\.\d+)?(px|em|rem|pt)?$/;
-        return reg.test(val) ? parseFloat(val) : val;
+        return reg.test(val) ? parseFloat(val) : valf;
     }
 
     /**
