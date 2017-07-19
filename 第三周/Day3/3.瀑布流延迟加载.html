@@ -47,6 +47,7 @@
         }
 
         ul li img {
+            display: block;
             width: 222px;
             background: url("./images/default.jpg") no-repeat center;
             background-size: 100%;
@@ -173,6 +174,17 @@
     }
 
     window.onscroll = function () {
+    var winH = utils.win('clientHeight');
+    var count = 0;
+    window.onscroll = function () {
+        var sTop = utils.win('scrollTop');
+        var sTh = utils.win('scrollHeight');
+
+        if(count< 6 && sTop + winH >= sTh-800){
+              console.log('快要到底了 赶快加载');
+              getData();
+              count++;
+        }
         delayImg();
     }
 </script>
