@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button id="btn">BUTTON</button>
+<script>
+    var btn=document.getElementById('btn');
+    function fn1() {
+        console.log('fn1')
+    }
+    function fn2() {
+        console.log('fn2')
+    }
+    function fn3() {
+        console.log('fn3')
+    }
+    on(btn,'click',fn1);
+    on(btn,'click',fn2);
+    on(btn,'click',fn3);
+    function on(ele,type,handle) {
+        if (ele.addEventListener){
+            ele.addEventListener(type,handle,false)
+        }else{
+//            function Fn(context,handle) {
+//                return function (e) {
+//                    handle.call(context,e)
+//                }
+//            }
+//            var event=ele['bind'+type];
+//            if(!(event instanceof Array)){
+//                event=ele['bind'+type]=[];
+//            }
+//            if (event){
+//                for (var i=0;i<event.length;i++){
+//                    if(event[i]._event===handle) return;
+//                }
+//            }
+//            ele.attachEvent('on'+type,Fn(ele,handle));
+//            Fn._event=handle;
+//            event.push(Fn);
+            var event=ele['bind'+type];
+            if(!(event instanceof Array)){
+                event=ele['bind'+type]=[];
+                ele.attachEvent('on'+type,function (e) {
+                    var event=ele['bind'+type];
+                    if(!(event instanceof Array)){
+                        for(var i=0;i<event.length;i++){
+                            event[i].call(ele,e)
+                        }
+                    }
+                })
+            }
+            for(var i=0;i<event.length;i++){
+                if(event[i]===handle) return
+            }
+            event.push(handle)
+
+        }
+    }
+
+off(btn,'click',fn1);
+off(btn,'click',fn2);
+off(btn,'click',fn3);
+    function off(ele,type,handle) {
+        if (ele.removeEventListener){
+            ele.removeEventListener(type,handle,false)
+        }else{
+            var event=ele['bind'+type];
+//            for(var i=0;i<event.length;i++){
+//               var cur=event[i];
+//                if(event[i]._event===handle){
+//                    ele.detachEvent('on'+type,cur);
+//                    event.splice(i,1)
+//                }
+//            }
+            for(var i=0;i<event.length;i++){
+                var cur=event[i];
+                if(cur===handle){
+                    event.splice(i,1);
+                    break
+                }
+            }
+        }
+    }
+    if(0){
+        btn.onclick=function () {
+            console.log('123')
+        }
+    }
+</script>
+</body>
+</html>

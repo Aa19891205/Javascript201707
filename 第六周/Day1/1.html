@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+<button id="btn">BUTTON</button>
+<script>
+    var btn=document.getElementById('btn');
+    function fn1() {
+        console.log('fn1')
+    }
+    on(btn,'click',fn1);
+    function fn2() {
+        console.log('fn2')
+    }
+    on(btn,'click',fn2);
+    function on(ele,type,handle) {
+        if(ele.addEventListener){
+            ele.addEventListener(type,handle,false)
+        }else{
+            function Fn(context,fn) {
+                return function (e) {
+                    fn.call(context,e)
+                }
+            }
+            ele.attachEvent('on'+type,Fn(ele,fn));
+            var event=ele['bind'+type];
+            if(!(event instanceof Array)){
+               event= ele['bind'+type]=[];
+            }
+
+            event.push(Fn);
+            Fn._event=handle;
+        }
+    }
+
+
+    off(btn,'click',fn1);
+    function off(ele,type,handle) {
+        if (ele.removeEventListener) {
+            ele.removeEventListener(type, handle, false)
+        } else {
+            var event=ele['bind'+type];
+            if(!(event instanceof Array)){
+                for(var i=0;i<event.length;i++){
+                    var cur=event[i];
+                    if(cur._event===handle){
+                        ele.detachEvent('on' + type, cur);
+                        event.splice(i,1)
+                    }
+                }
+            }
+
+        }
+    }
+</script>
+</body>
+</html>
