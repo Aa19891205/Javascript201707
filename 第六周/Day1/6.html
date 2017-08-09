@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<ul id="list">
+
+</ul>
+</body>
+</html>
+<script>
+    let ary=[{name:"a",age:12},{name:"b",age:22},{name:"c",age:32},{name:"d",age:42}];
+    let ss=``;
+    ary.forEach(function (item,index) {
+        ss+=`<li>`;
+        ss+=`<span>姓名：${item.name}</span>  <span>年龄：${item.age}</span>`
+        ss+=`</li>`;
+    });
+    document.getElementById('list').innerHTML=ss
+</script>mmmm
